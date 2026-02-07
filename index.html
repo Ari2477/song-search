@@ -3,8 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>LyricSpot - Song Search</title>
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <title>Music Player</title>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <style>
         * {
@@ -16,24 +15,23 @@
         }
 
         :root {
-            --spotify-green: #1DB954;
-            --spotify-dark: #121212;
-            --spotify-light-dark: #181818;
-            --spotify-gray: #282828;
-            --spotify-light-gray: #B3B3B3;
-            --spotify-white: #FFFFFF;
+            --primary: #1DB954;
+            --dark: #121212;
+            --light-dark: #181818;
+            --gray: #282828;
+            --light-gray: #B3B3B3;
+            --white: #FFFFFF;
         }
 
         body {
-            background-color: var(--spotify-dark);
-            color: var(--spotify-white);
+            background-color: var(--dark);
+            color: var(--white);
             min-height: 100vh;
             height: 100vh;
             overflow-x: hidden;
-            padding-bottom: 80px;
+            padding-bottom: 140px;
         }
 
-        /* Header for Mobile */
         .mobile-header {
             background-color: rgba(0, 0, 0, 0.95);
             padding: 15px;
@@ -57,18 +55,18 @@
         .logo {
             font-size: 22px;
             font-weight: bold;
-            color: var(--spotify-green);
+            color: var(--primary);
         }
 
         .logo-icon {
             font-size: 24px;
-            color: var(--spotify-green);
+            color: var(--primary);
         }
 
         .search-toggle {
             background: none;
             border: none;
-            color: var(--spotify-light-gray);
+            color: var(--light-gray);
             font-size: 20px;
             width: 40px;
             height: 40px;
@@ -79,13 +77,12 @@
             cursor: pointer;
         }
 
-        /* Search Bar for Mobile */
         .search-container {
             position: fixed;
             top: 70px;
             left: 0;
             right: 0;
-            background-color: var(--spotify-dark);
+            background-color: var(--dark);
             padding: 15px;
             z-index: 99;
             display: none;
@@ -102,8 +99,8 @@
             padding-left: 50px;
             border-radius: 30px;
             border: none;
-            background-color: var(--spotify-gray);
-            color: var(--spotify-white);
+            background-color: var(--gray);
+            color: var(--white);
             font-size: 16px;
             outline: none;
         }
@@ -113,13 +110,13 @@
             left: 30px;
             top: 50%;
             transform: translateY(-50%);
-            color: var(--spotify-light-gray);
+            color: var(--light-gray);
             font-size: 18px;
         }
 
         .search-btn {
-            background-color: var(--spotify-green);
-            color: var(--spotify-dark);
+            background-color: var(--primary);
+            color: var(--dark);
             border: none;
             padding: 12px 25px;
             border-radius: 30px;
@@ -134,11 +131,10 @@
             gap: 10px;
         }
 
-        /* Main Content */
         .main-content {
             margin-top: 70px;
             padding: 15px;
-            padding-bottom: 100px;
+            padding-bottom: 150px;
         }
 
         .welcome-section {
@@ -151,68 +147,10 @@
         }
 
         .welcome-subtitle {
-            color: var(--spotify-light-gray);
+            color: var(--light-gray);
             font-size: 16px;
         }
 
-        /* Recent Searches */
-        .recent-searches {
-            margin-bottom: 30px;
-        }
-
-        .section-title {
-            font-size: 18px;
-            margin-bottom: 15px;
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-        }
-
-        .clear-history {
-            background: none;
-            border: none;
-            color: var(--spotify-light-gray);
-            font-size: 14px;
-            cursor: pointer;
-        }
-
-        .recent-list {
-            display: flex;
-            flex-direction: column;
-            gap: 10px;
-        }
-
-        .recent-item {
-            background-color: var(--spotify-gray);
-            padding: 12px 15px;
-            border-radius: 10px;
-            display: flex;
-            align-items: center;
-            gap: 15px;
-            cursor: pointer;
-            transition: background-color 0.2s;
-        }
-
-        .recent-item:hover {
-            background-color: #333;
-        }
-
-        .recent-item i {
-            color: var(--spotify-green);
-            font-size: 18px;
-        }
-
-        .recent-info h4 {
-            font-size: 16px;
-            margin-bottom: 3px;
-        }
-
-        .recent-info p {
-            color: var(--spotify-light-gray);
-            font-size: 14px;
-        }
-
-        /* Results Section */
         .results-section {
             display: none;
         }
@@ -229,7 +167,7 @@
         }
 
         .results-count {
-            color: var(--spotify-light-gray);
+            color: var(--light-gray);
             font-size: 14px;
         }
 
@@ -240,30 +178,43 @@
         }
 
         .song-card {
-            background-color: var(--spotify-gray);
+            background-color: var(--gray);
             border-radius: 10px;
             padding: 15px;
             display: flex;
             align-items: center;
             gap: 15px;
-            transition: background-color 0.2s;
+            transition: all 0.2s ease;
+            cursor: pointer;
         }
 
         .song-card:hover {
             background-color: #333;
+            transform: translateY(-2px);
+        }
+
+        .song-card.playing {
+            background-color: rgba(29, 185, 84, 0.2);
+            border: 1px solid var(--primary);
         }
 
         .song-album {
             width: 60px;
             height: 60px;
             border-radius: 8px;
-            background: linear-gradient(135deg, #1DB954, #1a9c46);
+            background-size: cover;
+            background-position: center;
             display: flex;
             align-items: center;
             justify-content: center;
+            flex-shrink: 0;
+            position: relative;
+        }
+
+        .song-album i {
             font-size: 24px;
             color: white;
-            flex-shrink: 0;
+            text-shadow: 0 2px 5px rgba(0,0,0,0.5);
         }
 
         .song-info {
@@ -280,20 +231,22 @@
         }
 
         .song-artist {
-            color: var(--spotify-light-gray);
+            color: var(--light-gray);
             font-size: 14px;
             margin-bottom: 5px;
         }
 
-        .song-album-name {
-            color: var(--spotify-light-gray);
+        .song-details {
+            color: var(--light-gray);
             font-size: 12px;
+            display: flex;
+            gap: 10px;
         }
 
-        .lyrics-btn {
+        .play-btn {
             background: none;
             border: none;
-            color: var(--spotify-green);
+            color: var(--primary);
             font-size: 24px;
             width: 40px;
             height: 40px;
@@ -301,87 +254,136 @@
             align-items: center;
             justify-content: center;
             cursor: pointer;
+            transition: transform 0.2s;
         }
 
-        /* Lyrics Modal */
-        .lyrics-modal {
+        .play-btn:hover {
+            transform: scale(1.1);
+        }
+
+        .play-btn.disabled {
+            opacity: 0.3;
+            cursor: not-allowed;
+        }
+
+        .music-player {
             position: fixed;
-            top: 0;
+            bottom: 60px;
             left: 0;
             right: 0;
-            bottom: 0;
-            background-color: rgba(0, 0, 0, 0.9);
-            z-index: 1000;
+            background-color: var(--light-dark);
+            padding: 15px;
+            border-top: 1px solid var(--gray);
+            z-index: 100;
             display: none;
-            align-items: center;
-            justify-content: center;
-            padding: 20px;
         }
 
-        .lyrics-modal.active {
+        .music-player.active {
+            display: block;
+        }
+
+        .player-info {
             display: flex;
+            align-items: center;
+            gap: 15px;
+            margin-bottom: 15px;
         }
 
-        .lyrics-container {
-            background-color: var(--spotify-light-dark);
-            border-radius: 15px;
-            width: 100%;
-            max-width: 500px;
-            max-height: 80vh;
+        .player-album {
+            width: 50px;
+            height: 50px;
+            border-radius: 5px;
+            background-size: cover;
+            background-position: center;
+        }
+
+        .player-song-info {
+            flex: 1;
             overflow: hidden;
-            display: flex;
-            flex-direction: column;
         }
 
-        .lyrics-header {
-            padding: 20px;
-            background-color: var(--spotify-gray);
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
+        .player-song-title {
+            font-size: 16px;
+            white-space: nowrap;
+            overflow: hidden;
+            text-overflow: ellipsis;
         }
 
-        .lyrics-song-info h3 {
-            font-size: 18px;
-            margin-bottom: 5px;
-        }
-
-        .lyrics-song-info p {
-            color: var(--spotify-light-gray);
+        .player-song-artist {
+            color: var(--light-gray);
             font-size: 14px;
         }
 
-        .close-lyrics {
+        .player-controls {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 25px;
+        }
+
+        .control-btn {
             background: none;
             border: none;
-            color: var(--spotify-white);
+            color: var(--white);
+            font-size: 20px;
+            cursor: pointer;
+            padding: 10px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            transition: all 0.2s;
+        }
+
+        .control-btn.play-pause {
+            background-color: var(--white);
+            color: var(--dark);
+            width: 50px;
+            height: 50px;
             font-size: 24px;
+        }
+
+        .control-btn:hover:not(:disabled) {
+            color: var(--primary);
+        }
+
+        .control-btn:disabled {
+            opacity: 0.3;
+            cursor: not-allowed;
+        }
+
+        .control-btn.play-pause:hover:not(:disabled) {
+            transform: scale(1.05);
+        }
+
+        .player-progress {
+            margin-top: 15px;
+        }
+
+        .progress-bar {
+            width: 100%;
+            height: 4px;
+            background-color: var(--gray);
+            border-radius: 2px;
+            overflow: hidden;
             cursor: pointer;
         }
 
-        .lyrics-content {
-            padding: 20px;
-            overflow-y: auto;
-            flex: 1;
-            line-height: 1.6;
-            white-space: pre-line;
-            font-size: 16px;
+        .progress-fill {
+            height: 100%;
+            background-color: var(--primary);
+            width: 0%;
+            transition: width 0.1s;
         }
 
-        .lyrics-content::-webkit-scrollbar {
-            width: 8px;
+        .time-info {
+            display: flex;
+            justify-content: space-between;
+            margin-top: 5px;
+            font-size: 12px;
+            color: var(--light-gray);
         }
 
-        .lyrics-content::-webkit-scrollbar-track {
-            background: var(--spotify-gray);
-        }
-
-        .lyrics-content::-webkit-scrollbar-thumb {
-            background: var(--spotify-green);
-            border-radius: 4px;
-        }
-
-        /* Loading Spinner */
         .loading-spinner {
             display: none;
             text-align: center;
@@ -393,8 +395,8 @@
         }
 
         .spinner {
-            border: 4px solid var(--spotify-gray);
-            border-top: 4px solid var(--spotify-green);
+            border: 4px solid var(--gray);
+            border-top: 4px solid var(--primary);
             border-radius: 50%;
             width: 40px;
             height: 40px;
@@ -407,11 +409,10 @@
             100% { transform: rotate(360deg); }
         }
 
-        /* Empty State */
         .empty-state {
             text-align: center;
             padding: 40px 20px;
-            color: var(--spotify-light-gray);
+            color: var(--light-gray);
             display: none;
         }
 
@@ -422,20 +423,19 @@
         .empty-state i {
             font-size: 50px;
             margin-bottom: 15px;
-            color: var(--spotify-gray);
+            color: var(--gray);
         }
 
-        /* Bottom Navigation */
         .bottom-nav {
             position: fixed;
             bottom: 0;
             left: 0;
             right: 0;
-            background-color: var(--spotify-light-dark);
+            background-color: var(--light-dark);
             padding: 10px 0;
             display: flex;
             justify-content: space-around;
-            border-top: 1px solid var(--spotify-gray);
+            border-top: 1px solid var(--gray);
             z-index: 99;
         }
 
@@ -444,7 +444,7 @@
             flex-direction: column;
             align-items: center;
             gap: 5px;
-            color: var(--spotify-light-gray);
+            color: var(--light-gray);
             background: none;
             border: none;
             cursor: pointer;
@@ -454,7 +454,7 @@
         }
 
         .nav-item.active {
-            color: var(--spotify-green);
+            color: var(--primary);
         }
 
         .nav-item i {
@@ -465,7 +465,35 @@
             font-size: 12px;
         }
 
-        /* Responsive Adjustments */
+        .status-message {
+            background-color: rgba(0, 0, 0, 0.7);
+            color: var(--primary);
+            padding: 10px;
+            border-radius: 5px;
+            margin-top: 10px;
+            font-size: 12px;
+            display: none;
+            text-align: center;
+        }
+
+        .status-message.active {
+            display: block;
+        }
+
+        .spotify-link {
+            color: var(--primary);
+            text-decoration: none;
+            font-size: 12px;
+            display: inline-flex;
+            align-items: center;
+            gap: 5px;
+            margin-top: 5px;
+        }
+
+        .spotify-link:hover {
+            text-decoration: underline;
+        }
+
         @media (max-width: 480px) {
             .main-content {
                 padding: 15px;
@@ -479,117 +507,100 @@
                 padding: 12px;
             }
             
-            .lyrics-content {
-                padding: 15px;
+            .music-player {
+                padding: 12px;
             }
-        }
-
-        /* Swipe to close lyrics */
-        .lyrics-container {
-            touch-action: pan-y;
         }
     </style>
 </head>
 <body>
-    <!-- Mobile Header -->
     <div class="mobile-header">
         <div class="logo-container">
             <i class="fas fa-music logo-icon"></i>
-            <div class="logo">LyricSpot</div>
+            <div class="logo">Music Player</div>
         </div>
         <button class="search-toggle" id="searchToggle">
             <i class="fas fa-search"></i>
         </button>
     </div>
 
-    <!-- Search Container -->
     <div class="search-container" id="searchContainer">
         <div style="position: relative;">
             <i class="fas fa-search search-icon"></i>
-            <input type="text" class="search-box" id="searchInput" placeholder="Search for songs, artists, or lyrics...">
+            <input type="text" class="search-box" id="searchInput" placeholder="Search for songs, artists..." autocomplete="off">
         </div>
         <button class="search-btn" id="searchButton">
             <i class="fas fa-search"></i> Search
         </button>
+        <div class="status-message" id="statusMessage">
+            Searching songs from Spotify...
+        </div>
     </div>
 
-    <!-- Main Content -->
     <div class="main-content">
-        <!-- Welcome Section -->
         <div class="welcome-section" id="welcomeSection">
-            <h1 class="welcome-title">Hi, Music Lover!</h1>
-            <p class="welcome-subtitle">Search for your favorite songs and view lyrics</p>
+            <h1 class="welcome-title">Music Player</h1>
+            <p class="welcome-subtitle">Search songs and listen on Spotify</p>
+            <p class="welcome-subtitle" style="color: #1DB954; margin-top: 10px;">
+                <i class="fas fa-music"></i> Try: "sulitin", "love", "shape of you"
+            </p>
         </div>
 
-        <!-- Recent Searches -->
-        <div class="recent-searches" id="recentSection">
-            <div class="section-title">
-                <span>Recent Searches</span>
-                <button class="clear-history" id="clearHistory">Clear</button>
-            </div>
-            <div class="recent-list" id="recentList">
-                <!-- Recent searches will be added here dynamically -->
-                <div class="recent-item" data-search="love">
-                    <i class="fas fa-clock"></i>
-                    <div class="recent-info">
-                        <h4>Love songs</h4>
-                        <p>Searched just now</p>
-                    </div>
-                </div>
-                <div class="recent-item" data-search="shape of you">
-                    <i class="fas fa-clock"></i>
-                    <div class="recent-info">
-                        <h4>Shape of You</h4>
-                        <p>Ed Sheeran • Searched 2 days ago</p>
-                    </div>
-                </div>
-            </div>
-        </div>
-
-        <!-- Results Section -->
         <div class="results-section" id="resultsSection">
             <div class="results-header">
                 <h2 class="section-title">Search Results</h2>
                 <div class="results-count" id="resultsCount">0 results</div>
             </div>
-            <div class="results-list" id="resultsList">
-                <!-- Results will be added here dynamically -->
-            </div>
+            <div class="results-list" id="resultsList"></div>
         </div>
 
-        <!-- Loading Spinner -->
         <div class="loading-spinner" id="loadingSpinner">
             <div class="spinner"></div>
-            <p>Searching for songs...</p>
+            <p>Searching songs...</p>
         </div>
 
-        <!-- Empty State -->
         <div class="empty-state" id="emptyState">
             <i class="fas fa-music"></i>
             <h3>No songs found</h3>
-            <p>Try searching for a different song or artist</p>
+            <p>Try searching for a different song</p>
         </div>
     </div>
 
-    <!-- Lyrics Modal -->
-    <div class="lyrics-modal" id="lyricsModal">
-        <div class="lyrics-container">
-            <div class="lyrics-header">
-                <div class="lyrics-song-info">
-                    <h3 id="lyricsSongTitle">Song Title</h3>
-                    <p id="lyricsArtist">Artist Name</p>
-                </div>
-                <button class="close-lyrics" id="closeLyrics">
-                    <i class="fas fa-times"></i>
-                </button>
+    <div class="music-player" id="musicPlayer">
+        <div class="player-info">
+            <div class="player-album" id="playerAlbum"></div>
+            <div class="player-song-info">
+                <div class="player-song-title" id="playerSongTitle">No song playing</div>
+                <div class="player-song-artist" id="playerSongArtist">Select a song to open in Spotify</div>
+                <a href="#" target="_blank" class="spotify-link" id="spotifyLink">
+                    <i class="fab fa-spotify"></i> Open in Spotify
+                </a>
             </div>
-            <div class="lyrics-content" id="lyricsContent">
-                <!-- Lyrics will be displayed here -->
+        </div>
+        
+        <div class="player-controls">
+            <button class="control-btn" id="prevBtn" disabled>
+                <i class="fas fa-step-backward"></i>
+            </button>
+            <button class="control-btn play-pause" id="playPauseBtn" disabled>
+                <i class="fas fa-play"></i>
+            </button>
+            <button class="control-btn" id="nextBtn" disabled>
+                <i class="fas fa-step-forward"></i>
+            </button>
+        </div>
+        
+        <div class="player-progress">
+            <div class="progress-bar" id="progressBar">
+                <div class="progress-fill" id="progressFill"></div>
+            </div>
+            <div class="time-info">
+                <span id="currentTime">Open in Spotify App</span>
+                <span id="totalTime">to listen</span>
             </div>
         </div>
     </div>
 
-    <!-- Bottom Navigation -->
     <div class="bottom-nav">
         <button class="nav-item active" id="navHome">
             <i class="fas fa-home"></i>
@@ -599,71 +610,47 @@
             <i class="fas fa-search"></i>
             <span>Search</span>
         </button>
-        <button class="nav-item" id="navLibrary">
-            <i class="fas fa-book"></i>
-            <span>Library</span>
-        </button>
-        <button class="nav-item" id="navAccount">
-            <i class="fas fa-user"></i>
-            <span>Account</span>
-        </button>
     </div>
 
     <script>
-        // API Configuration
         const API_URL = "https://rapido.initd.asia/api/sp";
         const API_KEY = "zk-b40a2070f09ea168d47573b68285c714073a4b61e1486c2fd1832f987e0dc4a6";
         
-        // DOM Elements
         const searchToggle = document.getElementById('searchToggle');
         const searchContainer = document.getElementById('searchContainer');
         const searchInput = document.getElementById('searchInput');
         const searchButton = document.getElementById('searchButton');
+        const statusMessage = document.getElementById('statusMessage');
         const welcomeSection = document.getElementById('welcomeSection');
-        const recentSection = document.getElementById('recentSection');
         const resultsSection = document.getElementById('resultsSection');
         const resultsList = document.getElementById('resultsList');
         const resultsCount = document.getElementById('resultsCount');
         const loadingSpinner = document.getElementById('loadingSpinner');
         const emptyState = document.getElementById('emptyState');
-        const lyricsModal = document.getElementById('lyricsModal');
-        const lyricsContent = document.getElementById('lyricsContent');
-        const lyricsSongTitle = document.getElementById('lyricsSongTitle');
-        const lyricsArtist = document.getElementById('lyricsArtist');
-        const closeLyrics = document.getElementById('closeLyrics');
-        const clearHistory = document.getElementById('clearHistory');
-        const recentList = document.getElementById('recentList');
+        const musicPlayer = document.getElementById('musicPlayer');
+        const playerAlbum = document.getElementById('playerAlbum');
+        const playerSongTitle = document.getElementById('playerSongTitle');
+        const playerSongArtist = document.getElementById('playerSongArtist');
+        const spotifyLink = document.getElementById('spotifyLink');
+        const playPauseBtn = document.getElementById('playPauseBtn');
+        const prevBtn = document.getElementById('prevBtn');
+        const nextBtn = document.getElementById('nextBtn');
+        const progressBar = document.getElementById('progressBar');
+        const progressFill = document.getElementById('progressFill');
+        const currentTime = document.getElementById('currentTime');
+        const totalTime = document.getElementById('totalTime');
         
-        // Bottom navigation
         const navHome = document.getElementById('navHome');
         const navSearch = document.getElementById('navSearch');
         
-        // Recent searches storage
-        let recentSearches = JSON.parse(localStorage.getItem('lyricspot_recent_searches')) || [
-            { query: "love", time: Date.now() },
-            { query: "shape of you", time: Date.now() - 172800000 } // 2 days ago
-        ];
-        
-        // Current search state
         let currentSearchResults = [];
+        let currentSongIndex = -1;
         
-        // Initialize the app
         function initApp() {
-            updateRecentSearchesUI();
             setupEventListeners();
-            
-            // Check if there's a search query in URL
-            const urlParams = new URLSearchParams(window.location.search);
-            const query = urlParams.get('q');
-            if (query) {
-                searchInput.value = query;
-                performSearch(query);
-            }
         }
         
-        // Set up event listeners
         function setupEventListeners() {
-            // Search toggle
             searchToggle.addEventListener('click', () => {
                 searchContainer.classList.toggle('active');
                 if (searchContainer.classList.contains('active')) {
@@ -671,7 +658,6 @@
                 }
             });
             
-            // Search button
             searchButton.addEventListener('click', () => {
                 const query = searchInput.value.trim();
                 if (query) {
@@ -680,7 +666,6 @@
                 }
             });
             
-            // Search on Enter key
             searchInput.addEventListener('keypress', (e) => {
                 if (e.key === 'Enter') {
                     const query = searchInput.value.trim();
@@ -691,26 +676,6 @@
                 }
             });
             
-            // Close lyrics modal
-            closeLyrics.addEventListener('click', () => {
-                lyricsModal.classList.remove('active');
-            });
-            
-            // Close lyrics modal when clicking outside
-            lyricsModal.addEventListener('click', (e) => {
-                if (e.target === lyricsModal) {
-                    lyricsModal.classList.remove('active');
-                }
-            });
-            
-            // Clear history
-            clearHistory.addEventListener('click', () => {
-                recentSearches = [];
-                localStorage.setItem('lyricspot_recent_searches', JSON.stringify(recentSearches));
-                updateRecentSearchesUI();
-            });
-            
-            // Bottom navigation
             navSearch.addEventListener('click', () => {
                 searchContainer.classList.add('active');
                 searchInput.focus();
@@ -719,26 +684,25 @@
             
             navHome.addEventListener('click', () => {
                 welcomeSection.style.display = 'block';
-                recentSection.style.display = 'block';
                 resultsSection.classList.remove('active');
                 emptyState.classList.remove('active');
                 searchContainer.classList.remove('active');
                 setActiveNav('navHome');
             });
             
-            // Recent search item click
-            recentList.addEventListener('click', (e) => {
-                const recentItem = e.target.closest('.recent-item');
-                if (recentItem) {
-                    const query = recentItem.getAttribute('data-search');
-                    searchInput.value = query;
-                    performSearch(query);
-                    searchContainer.classList.remove('active');
+            // Play button opens Spotify
+            playPauseBtn.addEventListener('click', () => {
+                if (currentSongIndex !== -1) {
+                    const song = currentSearchResults[currentSongIndex];
+                    window.open(song.url, '_blank');
                 }
             });
+            
+            // Previous/Next buttons
+            prevBtn.addEventListener('click', playPreviousSong);
+            nextBtn.addEventListener('click', playNextSong);
         }
         
-        // Set active navigation item
         function setActiveNav(activeId) {
             document.querySelectorAll('.nav-item').forEach(item => {
                 item.classList.remove('active');
@@ -746,228 +710,172 @@
             document.getElementById(activeId).classList.add('active');
         }
         
-        // Update recent searches UI
-        function updateRecentSearchesUI() {
-            if (recentSearches.length === 0) {
-                recentList.innerHTML = '<div class="recent-item"><div class="recent-info"><h4>No recent searches</h4><p>Your search history will appear here</p></div></div>';
-                return;
-            }
-            
-            recentList.innerHTML = '';
-            recentSearches.slice(0, 5).forEach(search => {
-                const timeAgo = getTimeAgo(search.time);
-                const item = document.createElement('div');
-                item.className = 'recent-item';
-                item.setAttribute('data-search', search.query);
-                item.innerHTML = `
-                    <i class="fas fa-clock"></i>
-                    <div class="recent-info">
-                        <h4>${capitalizeFirstLetter(search.query)}</h4>
-                        <p>Searched ${timeAgo}</p>
-                    </div>
-                `;
-                recentList.appendChild(item);
-            });
-        }
-        
-        // Get time ago string
-        function getTimeAgo(timestamp) {
-            const now = Date.now();
-            const diff = now - timestamp;
-            
-            if (diff < 60000) return 'just now';
-            if (diff < 3600000) return `${Math.floor(diff / 60000)} minutes ago`;
-            if (diff < 86400000) return `${Math.floor(diff / 3600000)} hours ago`;
-            return `${Math.floor(diff / 86400000)} days ago`;
-        }
-        
-        // Capitalize first letter
-        function capitalizeFirstLetter(string) {
-            return string.charAt(0).toUpperCase() + string.slice(1);
-        }
-        
-        // Perform search
         async function performSearch(query) {
-            // Show loading, hide other sections
             loadingSpinner.classList.add('active');
             welcomeSection.style.display = 'none';
-            recentSection.style.display = 'none';
             resultsSection.classList.remove('active');
             emptyState.classList.remove('active');
-            
-            // Add to recent searches
-            addToRecentSearches(query);
+            statusMessage.textContent = "Searching songs from Spotify...";
+            statusMessage.classList.add('active');
             
             try {
-                // Call the API
-                const response = await fetch(`${API_URL}?query=${encodeURIComponent(query)}&apikey=${API_KEY}`);
+                const apiUrl = `${API_URL}?query=${encodeURIComponent(query)}&apikey=${API_KEY}`;
+                const response = await fetch(apiUrl);
                 
                 if (!response.ok) {
                     throw new Error(`API error: ${response.status}`);
                 }
                 
                 const data = await response.json();
-                
-                // Process results
+                console.log("API Response:", data);
                 displaySearchResults(data, query);
                 
             } catch (error) {
                 console.error('Search error:', error);
-                showErrorState();
+                statusMessage.textContent = "Error: " + error.message;
+                emptyState.innerHTML = `
+                    <i class="fas fa-exclamation-circle"></i>
+                    <h3>Search failed</h3>
+                    <p>${error.message}</p>
+                `;
+                emptyState.classList.add('active');
             } finally {
                 loadingSpinner.classList.remove('active');
             }
         }
         
-        // Add search to recent searches
-        function addToRecentSearches(query) {
-            // Remove if already exists
-            recentSearches = recentSearches.filter(item => item.query.toLowerCase() !== query.toLowerCase());
-            
-            // Add to beginning
-            recentSearches.unshift({
-                query: query,
-                time: Date.now()
-            });
-            
-            // Keep only last 10 searches
-            if (recentSearches.length > 10) {
-                recentSearches.pop();
-            }
-            
-            // Save to localStorage
-            localStorage.setItem('lyricspot_recent_searches', JSON.stringify(recentSearches));
-            
-            // Update UI
-            updateRecentSearchesUI();
-        }
-        
-        // Display search results
         function displaySearchResults(data, query) {
-            // Clear previous results
             resultsList.innerHTML = '';
             
-            // Check if we have results
-            if (!data || !data.result || data.result.length === 0) {
+            if (!data || typeof data !== 'object') {
                 emptyState.classList.add('active');
                 resultsCount.textContent = '0 results';
+                statusMessage.textContent = "No results found";
                 return;
             }
             
-            // Show results section
+            const songsArray = [];
+            for (const key in data) {
+                if (key !== 'maintainer' && data[key] && typeof data[key] === 'object') {
+                    songsArray.push(data[key]);
+                }
+            }
+            
+            if (songsArray.length === 0) {
+                emptyState.classList.add('active');
+                resultsCount.textContent = '0 results';
+                statusMessage.textContent = "No songs found for: " + query;
+                return;
+            }
+            
             resultsSection.classList.add('active');
+            resultsCount.textContent = `${songsArray.length} result${songsArray.length !== 1 ? 's' : ''}`;
+            currentSearchResults = songsArray;
             
-            // Update results count
-            resultsCount.textContent = `${data.result.length} result${data.result.length !== 1 ? 's' : ''}`;
-            
-            // Store current results
-            currentSearchResults = data.result;
-            
-            // Create result items
-            data.result.forEach((song, index) => {
+            songsArray.forEach((song, index) => {
                 const songCard = document.createElement('div');
                 songCard.className = 'song-card';
+                songCard.setAttribute('data-index', index);
+                
+                const durationFormatted = song.duration || '0:00';
+                
                 songCard.innerHTML = `
-                    <div class="song-album">
-                        <i class="fas fa-music"></i>
+                    <div class="song-album" style="background-image: url('${song.image || 'https://i.scdn.co/image/ab67616d0000b2732a5b20e5f357c3923e3256c6'}');">
+                        ${!song.image ? '<i class="fas fa-music"></i>' : ''}
                     </div>
                     <div class="song-info">
-                        <h3 class="song-title">${song.title || 'Unknown Title'}</h3>
+                        <h3 class="song-title">${song.name || 'Unknown Song'}</h3>
                         <p class="song-artist">${song.artist || 'Unknown Artist'}</p>
-                        <p class="song-album-name">${song.album || ''}</p>
+                        <div class="song-details">
+                            <span>${song.release ? new Date(song.release).getFullYear() : ''}</span>
+                            <span>${durationFormatted}</span>
+                        </div>
+                        <a href="${song.url}" target="_blank" class="spotify-link">
+                            <i class="fab fa-spotify"></i> Open in Spotify
+                        </a>
                     </div>
-                    <button class="lyrics-btn" data-index="${index}">
-                        <i class="fas fa-scroll"></i>
+                    <button class="play-btn" data-index="${index}">
+                        <i class="fas fa-play"></i>
                     </button>
                 `;
                 
                 resultsList.appendChild(songCard);
             });
             
-            // Add event listeners to lyrics buttons
-            document.querySelectorAll('.lyrics-btn').forEach(btn => {
+            document.querySelectorAll('.play-btn').forEach(btn => {
                 btn.addEventListener('click', (e) => {
+                    e.stopPropagation();
                     const index = parseInt(e.currentTarget.getAttribute('data-index'));
-                    showLyrics(index);
+                    selectSong(index);
                 });
             });
+            
+            document.querySelectorAll('.song-card').forEach(card => {
+                card.addEventListener('click', (e) => {
+                    if (!e.target.classList.contains('play-btn') && !e.target.closest('.spotify-link')) {
+                        const index = parseInt(e.currentTarget.getAttribute('data-index'));
+                        selectSong(index);
+                    }
+                });
+            });
+            
+            statusMessage.textContent = `Found ${songsArray.length} songs. Click to open in Spotify.`;
         }
         
-        // Show error state
-        function showErrorState() {
-            emptyState.innerHTML = `
-                <i class="fas fa-exclamation-circle"></i>
-                <h3>Search failed</h3>
-                <p>Please check your connection and try again</p>
-            `;
-            emptyState.classList.add('active');
-        }
-        
-        // Show lyrics for a song
-        async function showLyrics(index) {
+        function selectSong(index) {
+            if (index < 0 || index >= currentSearchResults.length) return;
+            
             const song = currentSearchResults[index];
             
-            // Update modal header
-            lyricsSongTitle.textContent = song.title || 'Unknown Title';
-            lyricsArtist.textContent = song.artist || 'Unknown Artist';
+            document.querySelectorAll('.song-card').forEach(card => {
+                card.classList.remove('playing');
+            });
+            document.querySelector(`.song-card[data-index="${index}"]`).classList.add('playing');
             
-            // Show loading in lyrics content
-            lyricsContent.textContent = 'Loading lyrics...';
-            lyricsModal.classList.add('active');
+            currentSongIndex = index;
             
-            try {
-                // Fetch lyrics from API
-                const response = await fetch(`${API_URL}?query=${encodeURIComponent(song.title + ' ' + song.artist)}&apikey=${API_KEY}`);
-                
-                if (!response.ok) {
-                    throw new Error(`API error: ${response.status}`);
-                }
-                
-                const data = await response.json();
-                
-                // Display lyrics
-                if (data.result && data.result.length > 0) {
-                    // Try to find the exact song match
-                    const exactMatch = data.result.find(item => 
-                        item.title && song.title && 
-                        item.title.toLowerCase().includes(song.title.toLowerCase())
-                    );
-                    
-                    if (exactMatch && exactMatch.lyrics) {
-                        lyricsContent.textContent = exactMatch.lyrics;
-                    } else if (data.result[0].lyrics) {
-                        lyricsContent.textContent = data.result[0].lyrics;
-                    } else {
-                        lyricsContent.textContent = 'Lyrics not available for this song.';
-                    }
-                } else {
-                    lyricsContent.textContent = 'Lyrics not found for this song.';
-                }
-                
-            } catch (error) {
-                console.error('Lyrics fetch error:', error);
-                lyricsContent.textContent = 'Failed to load lyrics. Please try again.';
-            }
+            playerSongTitle.textContent = song.name || 'Unknown Song';
+            playerSongArtist.textContent = song.artist || 'Unknown Artist';
+            playerAlbum.style.backgroundImage = `url('${song.image || 'https://i.scdn.co/image/ab67616d0000b2732a5b20e5f357c3923e3256c6'}')`;
+            spotifyLink.href = song.url;
+            
+            // Enable buttons
+            playPauseBtn.disabled = false;
+            prevBtn.disabled = false;
+            nextBtn.disabled = false;
+            
+            musicPlayer.classList.add('active');
+            statusMessage.textContent = `Selected: ${song.name} - Click play to open in Spotify`;
         }
         
-        // Initialize the app when DOM is loaded
+        function playPreviousSong() {
+            if (currentSearchResults.length === 0) return;
+            
+            let newIndex = currentSongIndex - 1;
+            if (newIndex < 0) {
+                newIndex = currentSearchResults.length - 1;
+            }
+            
+            selectSong(newIndex);
+        }
+        
+        function playNextSong() {
+            if (currentSearchResults.length === 0) return;
+            
+            let newIndex = currentSongIndex + 1;
+            if (newIndex >= currentSearchResults.length) {
+                newIndex = 0;
+            }
+            
+            selectSong(newIndex);
+        }
+        
         document.addEventListener('DOMContentLoaded', initApp);
-        
-        // Prevent zoom on double-tap
-        document.addEventListener('touchstart', (event) => {
-            if (event.touches.length > 1) {
-                event.preventDefault();
-            }
-        }, { passive: false });
-        
-        let lastTouchEnd = 0;
-        document.addEventListener('touchend', (event) => {
-            const now = Date.now();
-            if (now - lastTouchEnd <= 300) {
-                event.preventDefault();
-            }
-            lastTouchEnd = now;
-        }, false);
+
+        setTimeout(() => {
+            searchInput.value = "sulitin";
+            performSearch("sulitin");
+        }, 500);
     </script>
 </body>
 </html>
