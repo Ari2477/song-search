@@ -1,0 +1,199 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+<title>Rapido Music Pro</title>
+
+<style>
+@import url('https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600&display=swap');
+
+*{margin:0;padding:0;box-sizing:border-box;font-family:Poppins,sans-serif;}
+
+body{
+  background:#121212;
+  color:white;
+}
+
+/* HEADER */
+.header{
+  padding:20px;
+  text-align:center;
+  background:#181818;
+  position:sticky;
+  top:0;
+}
+
+.logo{
+  color:#1db954;
+  font-size:28px;
+  font-weight:700;
+}
+
+/* SEARCH */
+.search-box{
+  margin-top:12px;
+  display:flex;
+  justify-content:center;
+  gap:10px;
+}
+
+.search-box input{
+  width:320px;
+  padding:12px 18px;
+  border-radius:30px;
+  border:none;
+  outline:none;
+}
+
+.search-box button{
+  background:#1db954;
+  border:none;
+  color:white;
+  padding:12px 22px;
+  border-radius:30px;
+  cursor:pointer;
+}
+
+/* GRID */
+.results{
+  padding:25px;
+  display:grid;
+  grid-template-columns:repeat(auto-fill,minmax(170px,1fr));
+  gap:16px;
+}
+
+/* CARD */
+.card{
+  background:#181818;
+  border-radius:12px;
+  padding:12px;
+  transition:.25s;
+  text-align:center;
+}
+
+.card:hover{
+  background:#242424;
+  transform:translateY(-5px);
+}
+
+.card img{
+  width:100%;
+  border-radius:8px;
+}
+
+.title{
+  font-size:14px;
+  font-weight:600;
+  margin-top:6px;
+}
+
+.artist{
+  font-size:12px;
+  color:#aaa;
+}
+
+.loading{
+  text-align:center;
+  padding:40px;
+  color:#aaa;
+}
+</style>
+</head>
+
+<body>
+
+<header class="header">
+  <div class="logo">Rapido Music</div>
+  <div class="search-box">
+    <input id="searchInput" placeholder="Search any song or artist...">
+    <button onclick="searchSongs()">Search</button>
+  </div>
+</header>
+
+<div id="results" class="results"></div>
+
+<script>
+/* CONFIG */
+const BASE_URL = "https://rapido.initd.asia/api/sp";
+const API_KEY = "zk-b40a2070f09ea168d47573b68285c714073a4b61e1486c2fd1832f987e0dc4a6";
+
+const input = document.getElementById("searchInput");
+const resultsDiv = document.getElementById("results");
+
+input.addEventListener("keypress", e=>{
+  if(e.key==="Enter") searchSongs();
+});
+
+/* CLEAN QUERY (mas flexible) */
+function normalize(text){
+  return text
+    .toLowerCase()
+    .replace(/[^\w\s]/g,"")
+    .replace(/\s+/g," ")
+    .trim();
+}
+
+/* MAIN SEARCH */
+async function searchSongs(){
+  let raw = input.value;
+  if(!raw) return;
+
+  let query = normalize(raw);
+
+  resultsDiv.innerHTML = `<div class="loading">Searching...</div>`;
+
+  try{
+    let res = await fetch(`${BASE_URL}?query=${encodeURIComponent(query)}&apikey=${API_KEY}`);
+    let data = await res.json();
+
+    console.log("API:", data);
+
+    /* AUTO DETECT ARRAY (kahit anong format ng API) */
+    let list = Object.values(data).find(v => Array.isArray(v)) || [];
+
+    /* LOCAL FILTER (mas accurate search) */
+    list = list.filter(song=>{
+      let title = normalize(song.title || "");
+      let artist = normalize(song.artist || song.author || "");
+      return title.includes(query) || artist.includes(query);
+    });
+
+    displayResults(list);
+
+  }catch(err){
+    console.error(err);
+    resultsDiv.innerHTML = `<div class="loading">Error loading results</div>`;
+  }
+}
+
+/* DISPLAY */
+function displayResults(list){
+  resultsDiv.innerHTML="";
+
+  if(!list.length){
+    resultsDiv.innerHTML = `<div class="loading">No results found</div>`;
+    return;
+  }
+
+  list.forEach(song=>{
+    let img = song.thumb || song.thumbnail || "https://via.placeholder.com/300x300?text=No+Image";
+    let title = song.title || "Unknown";
+    let artist = song.artist || song.author || "Unknown";
+
+    let card = document.createElement("div");
+    card.className="card";
+
+    card.innerHTML = `
+      <img src="${img}">
+      <div class="title">${title}</div>
+      <div class="artist">${artist}</div>
+    `;
+
+    resultsDiv.appendChild(card);
+  });
+}
+</script>
+
+</body>
+</html>
