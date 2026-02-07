@@ -1,199 +1,973 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-<meta charset="UTF-8" />
-<meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-<title>Rapido Music Pro</title>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>LyricSpot - Song Search</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            -webkit-tap-highlight-color: transparent;
+        }
 
-<style>
-@import url('https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600&display=swap');
+        :root {
+            --spotify-green: #1DB954;
+            --spotify-dark: #121212;
+            --spotify-light-dark: #181818;
+            --spotify-gray: #282828;
+            --spotify-light-gray: #B3B3B3;
+            --spotify-white: #FFFFFF;
+        }
 
-*{margin:0;padding:0;box-sizing:border-box;font-family:Poppins,sans-serif;}
+        body {
+            background-color: var(--spotify-dark);
+            color: var(--spotify-white);
+            min-height: 100vh;
+            height: 100vh;
+            overflow-x: hidden;
+            padding-bottom: 80px;
+        }
 
-body{
-  background:#121212;
-  color:white;
-}
+        /* Header for Mobile */
+        .mobile-header {
+            background-color: rgba(0, 0, 0, 0.95);
+            padding: 15px;
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            z-index: 100;
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.5);
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+        }
 
-/* HEADER */
-.header{
-  padding:20px;
-  text-align:center;
-  background:#181818;
-  position:sticky;
-  top:0;
-}
+        .logo-container {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
 
-.logo{
-  color:#1db954;
-  font-size:28px;
-  font-weight:700;
-}
+        .logo {
+            font-size: 22px;
+            font-weight: bold;
+            color: var(--spotify-green);
+        }
 
-/* SEARCH */
-.search-box{
-  margin-top:12px;
-  display:flex;
-  justify-content:center;
-  gap:10px;
-}
+        .logo-icon {
+            font-size: 24px;
+            color: var(--spotify-green);
+        }
 
-.search-box input{
-  width:320px;
-  padding:12px 18px;
-  border-radius:30px;
-  border:none;
-  outline:none;
-}
+        .search-toggle {
+            background: none;
+            border: none;
+            color: var(--spotify-light-gray);
+            font-size: 20px;
+            width: 40px;
+            height: 40px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            border-radius: 50%;
+            cursor: pointer;
+        }
 
-.search-box button{
-  background:#1db954;
-  border:none;
-  color:white;
-  padding:12px 22px;
-  border-radius:30px;
-  cursor:pointer;
-}
+        /* Search Bar for Mobile */
+        .search-container {
+            position: fixed;
+            top: 70px;
+            left: 0;
+            right: 0;
+            background-color: var(--spotify-dark);
+            padding: 15px;
+            z-index: 99;
+            display: none;
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.5);
+        }
 
-/* GRID */
-.results{
-  padding:25px;
-  display:grid;
-  grid-template-columns:repeat(auto-fill,minmax(170px,1fr));
-  gap:16px;
-}
+        .search-container.active {
+            display: block;
+        }
 
-/* CARD */
-.card{
-  background:#181818;
-  border-radius:12px;
-  padding:12px;
-  transition:.25s;
-  text-align:center;
-}
+        .search-box {
+            width: 100%;
+            padding: 15px 20px;
+            padding-left: 50px;
+            border-radius: 30px;
+            border: none;
+            background-color: var(--spotify-gray);
+            color: var(--spotify-white);
+            font-size: 16px;
+            outline: none;
+        }
 
-.card:hover{
-  background:#242424;
-  transform:translateY(-5px);
-}
+        .search-icon {
+            position: absolute;
+            left: 30px;
+            top: 50%;
+            transform: translateY(-50%);
+            color: var(--spotify-light-gray);
+            font-size: 18px;
+        }
 
-.card img{
-  width:100%;
-  border-radius:8px;
-}
+        .search-btn {
+            background-color: var(--spotify-green);
+            color: var(--spotify-dark);
+            border: none;
+            padding: 12px 25px;
+            border-radius: 30px;
+            font-weight: bold;
+            margin-top: 15px;
+            width: 100%;
+            font-size: 16px;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 10px;
+        }
 
-.title{
-  font-size:14px;
-  font-weight:600;
-  margin-top:6px;
-}
+        /* Main Content */
+        .main-content {
+            margin-top: 70px;
+            padding: 15px;
+            padding-bottom: 100px;
+        }
 
-.artist{
-  font-size:12px;
-  color:#aaa;
-}
+        .welcome-section {
+            margin-bottom: 25px;
+        }
 
-.loading{
-  text-align:center;
-  padding:40px;
-  color:#aaa;
-}
-</style>
+        .welcome-title {
+            font-size: 24px;
+            margin-bottom: 5px;
+        }
+
+        .welcome-subtitle {
+            color: var(--spotify-light-gray);
+            font-size: 16px;
+        }
+
+        /* Recent Searches */
+        .recent-searches {
+            margin-bottom: 30px;
+        }
+
+        .section-title {
+            font-size: 18px;
+            margin-bottom: 15px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .clear-history {
+            background: none;
+            border: none;
+            color: var(--spotify-light-gray);
+            font-size: 14px;
+            cursor: pointer;
+        }
+
+        .recent-list {
+            display: flex;
+            flex-direction: column;
+            gap: 10px;
+        }
+
+        .recent-item {
+            background-color: var(--spotify-gray);
+            padding: 12px 15px;
+            border-radius: 10px;
+            display: flex;
+            align-items: center;
+            gap: 15px;
+            cursor: pointer;
+            transition: background-color 0.2s;
+        }
+
+        .recent-item:hover {
+            background-color: #333;
+        }
+
+        .recent-item i {
+            color: var(--spotify-green);
+            font-size: 18px;
+        }
+
+        .recent-info h4 {
+            font-size: 16px;
+            margin-bottom: 3px;
+        }
+
+        .recent-info p {
+            color: var(--spotify-light-gray);
+            font-size: 14px;
+        }
+
+        /* Results Section */
+        .results-section {
+            display: none;
+        }
+
+        .results-section.active {
+            display: block;
+        }
+
+        .results-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 20px;
+        }
+
+        .results-count {
+            color: var(--spotify-light-gray);
+            font-size: 14px;
+        }
+
+        .results-list {
+            display: flex;
+            flex-direction: column;
+            gap: 15px;
+        }
+
+        .song-card {
+            background-color: var(--spotify-gray);
+            border-radius: 10px;
+            padding: 15px;
+            display: flex;
+            align-items: center;
+            gap: 15px;
+            transition: background-color 0.2s;
+        }
+
+        .song-card:hover {
+            background-color: #333;
+        }
+
+        .song-album {
+            width: 60px;
+            height: 60px;
+            border-radius: 8px;
+            background: linear-gradient(135deg, #1DB954, #1a9c46);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 24px;
+            color: white;
+            flex-shrink: 0;
+        }
+
+        .song-info {
+            flex: 1;
+            overflow: hidden;
+        }
+
+        .song-title {
+            font-size: 16px;
+            margin-bottom: 5px;
+            white-space: nowrap;
+            overflow: hidden;
+            text-overflow: ellipsis;
+        }
+
+        .song-artist {
+            color: var(--spotify-light-gray);
+            font-size: 14px;
+            margin-bottom: 5px;
+        }
+
+        .song-album-name {
+            color: var(--spotify-light-gray);
+            font-size: 12px;
+        }
+
+        .lyrics-btn {
+            background: none;
+            border: none;
+            color: var(--spotify-green);
+            font-size: 24px;
+            width: 40px;
+            height: 40px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+        }
+
+        /* Lyrics Modal */
+        .lyrics-modal {
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background-color: rgba(0, 0, 0, 0.9);
+            z-index: 1000;
+            display: none;
+            align-items: center;
+            justify-content: center;
+            padding: 20px;
+        }
+
+        .lyrics-modal.active {
+            display: flex;
+        }
+
+        .lyrics-container {
+            background-color: var(--spotify-light-dark);
+            border-radius: 15px;
+            width: 100%;
+            max-width: 500px;
+            max-height: 80vh;
+            overflow: hidden;
+            display: flex;
+            flex-direction: column;
+        }
+
+        .lyrics-header {
+            padding: 20px;
+            background-color: var(--spotify-gray);
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .lyrics-song-info h3 {
+            font-size: 18px;
+            margin-bottom: 5px;
+        }
+
+        .lyrics-song-info p {
+            color: var(--spotify-light-gray);
+            font-size: 14px;
+        }
+
+        .close-lyrics {
+            background: none;
+            border: none;
+            color: var(--spotify-white);
+            font-size: 24px;
+            cursor: pointer;
+        }
+
+        .lyrics-content {
+            padding: 20px;
+            overflow-y: auto;
+            flex: 1;
+            line-height: 1.6;
+            white-space: pre-line;
+            font-size: 16px;
+        }
+
+        .lyrics-content::-webkit-scrollbar {
+            width: 8px;
+        }
+
+        .lyrics-content::-webkit-scrollbar-track {
+            background: var(--spotify-gray);
+        }
+
+        .lyrics-content::-webkit-scrollbar-thumb {
+            background: var(--spotify-green);
+            border-radius: 4px;
+        }
+
+        /* Loading Spinner */
+        .loading-spinner {
+            display: none;
+            text-align: center;
+            padding: 30px;
+        }
+
+        .loading-spinner.active {
+            display: block;
+        }
+
+        .spinner {
+            border: 4px solid var(--spotify-gray);
+            border-top: 4px solid var(--spotify-green);
+            border-radius: 50%;
+            width: 40px;
+            height: 40px;
+            animation: spin 1s linear infinite;
+            margin: 0 auto 15px;
+        }
+
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+
+        /* Empty State */
+        .empty-state {
+            text-align: center;
+            padding: 40px 20px;
+            color: var(--spotify-light-gray);
+            display: none;
+        }
+
+        .empty-state.active {
+            display: block;
+        }
+
+        .empty-state i {
+            font-size: 50px;
+            margin-bottom: 15px;
+            color: var(--spotify-gray);
+        }
+
+        /* Bottom Navigation */
+        .bottom-nav {
+            position: fixed;
+            bottom: 0;
+            left: 0;
+            right: 0;
+            background-color: var(--spotify-light-dark);
+            padding: 10px 0;
+            display: flex;
+            justify-content: space-around;
+            border-top: 1px solid var(--spotify-gray);
+            z-index: 99;
+        }
+
+        .nav-item {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 5px;
+            color: var(--spotify-light-gray);
+            background: none;
+            border: none;
+            cursor: pointer;
+            padding: 8px;
+            width: 25%;
+            transition: color 0.2s;
+        }
+
+        .nav-item.active {
+            color: var(--spotify-green);
+        }
+
+        .nav-item i {
+            font-size: 20px;
+        }
+
+        .nav-item span {
+            font-size: 12px;
+        }
+
+        /* Responsive Adjustments */
+        @media (max-width: 480px) {
+            .main-content {
+                padding: 15px;
+            }
+            
+            .welcome-title {
+                font-size: 22px;
+            }
+            
+            .song-card {
+                padding: 12px;
+            }
+            
+            .lyrics-content {
+                padding: 15px;
+            }
+        }
+
+        /* Swipe to close lyrics */
+        .lyrics-container {
+            touch-action: pan-y;
+        }
+    </style>
 </head>
-
 <body>
+    <!-- Mobile Header -->
+    <div class="mobile-header">
+        <div class="logo-container">
+            <i class="fas fa-music logo-icon"></i>
+            <div class="logo">LyricSpot</div>
+        </div>
+        <button class="search-toggle" id="searchToggle">
+            <i class="fas fa-search"></i>
+        </button>
+    </div>
 
-<header class="header">
-  <div class="logo">Rapido Music</div>
-  <div class="search-box">
-    <input id="searchInput" placeholder="Search any song or artist...">
-    <button onclick="searchSongs()">Search</button>
-  </div>
-</header>
+    <!-- Search Container -->
+    <div class="search-container" id="searchContainer">
+        <div style="position: relative;">
+            <i class="fas fa-search search-icon"></i>
+            <input type="text" class="search-box" id="searchInput" placeholder="Search for songs, artists, or lyrics...">
+        </div>
+        <button class="search-btn" id="searchButton">
+            <i class="fas fa-search"></i> Search
+        </button>
+    </div>
 
-<div id="results" class="results"></div>
+    <!-- Main Content -->
+    <div class="main-content">
+        <!-- Welcome Section -->
+        <div class="welcome-section" id="welcomeSection">
+            <h1 class="welcome-title">Hi, Music Lover!</h1>
+            <p class="welcome-subtitle">Search for your favorite songs and view lyrics</p>
+        </div>
 
-<script>
-/* CONFIG */
-const BASE_URL = "https://rapido.initd.asia/api/sp";
-const API_KEY = "zk-b40a2070f09ea168d47573b68285c714073a4b61e1486c2fd1832f987e0dc4a6";
+        <!-- Recent Searches -->
+        <div class="recent-searches" id="recentSection">
+            <div class="section-title">
+                <span>Recent Searches</span>
+                <button class="clear-history" id="clearHistory">Clear</button>
+            </div>
+            <div class="recent-list" id="recentList">
+                <!-- Recent searches will be added here dynamically -->
+                <div class="recent-item" data-search="love">
+                    <i class="fas fa-clock"></i>
+                    <div class="recent-info">
+                        <h4>Love songs</h4>
+                        <p>Searched just now</p>
+                    </div>
+                </div>
+                <div class="recent-item" data-search="shape of you">
+                    <i class="fas fa-clock"></i>
+                    <div class="recent-info">
+                        <h4>Shape of You</h4>
+                        <p>Ed Sheeran • Searched 2 days ago</p>
+                    </div>
+                </div>
+            </div>
+        </div>
 
-const input = document.getElementById("searchInput");
-const resultsDiv = document.getElementById("results");
+        <!-- Results Section -->
+        <div class="results-section" id="resultsSection">
+            <div class="results-header">
+                <h2 class="section-title">Search Results</h2>
+                <div class="results-count" id="resultsCount">0 results</div>
+            </div>
+            <div class="results-list" id="resultsList">
+                <!-- Results will be added here dynamically -->
+            </div>
+        </div>
 
-input.addEventListener("keypress", e=>{
-  if(e.key==="Enter") searchSongs();
-});
+        <!-- Loading Spinner -->
+        <div class="loading-spinner" id="loadingSpinner">
+            <div class="spinner"></div>
+            <p>Searching for songs...</p>
+        </div>
 
-/* CLEAN QUERY (mas flexible) */
-function normalize(text){
-  return text
-    .toLowerCase()
-    .replace(/[^\w\s]/g,"")
-    .replace(/\s+/g," ")
-    .trim();
-}
+        <!-- Empty State -->
+        <div class="empty-state" id="emptyState">
+            <i class="fas fa-music"></i>
+            <h3>No songs found</h3>
+            <p>Try searching for a different song or artist</p>
+        </div>
+    </div>
 
-/* MAIN SEARCH */
-async function searchSongs(){
-  let raw = input.value;
-  if(!raw) return;
+    <!-- Lyrics Modal -->
+    <div class="lyrics-modal" id="lyricsModal">
+        <div class="lyrics-container">
+            <div class="lyrics-header">
+                <div class="lyrics-song-info">
+                    <h3 id="lyricsSongTitle">Song Title</h3>
+                    <p id="lyricsArtist">Artist Name</p>
+                </div>
+                <button class="close-lyrics" id="closeLyrics">
+                    <i class="fas fa-times"></i>
+                </button>
+            </div>
+            <div class="lyrics-content" id="lyricsContent">
+                <!-- Lyrics will be displayed here -->
+            </div>
+        </div>
+    </div>
 
-  let query = normalize(raw);
+    <!-- Bottom Navigation -->
+    <div class="bottom-nav">
+        <button class="nav-item active" id="navHome">
+            <i class="fas fa-home"></i>
+            <span>Home</span>
+        </button>
+        <button class="nav-item" id="navSearch">
+            <i class="fas fa-search"></i>
+            <span>Search</span>
+        </button>
+        <button class="nav-item" id="navLibrary">
+            <i class="fas fa-book"></i>
+            <span>Library</span>
+        </button>
+        <button class="nav-item" id="navAccount">
+            <i class="fas fa-user"></i>
+            <span>Account</span>
+        </button>
+    </div>
 
-  resultsDiv.innerHTML = `<div class="loading">Searching...</div>`;
-
-  try{
-    let res = await fetch(`${BASE_URL}?query=${encodeURIComponent(query)}&apikey=${API_KEY}`);
-    let data = await res.json();
-
-    console.log("API:", data);
-
-    /* AUTO DETECT ARRAY (kahit anong format ng API) */
-    let list = Object.values(data).find(v => Array.isArray(v)) || [];
-
-    /* LOCAL FILTER (mas accurate search) */
-    list = list.filter(song=>{
-      let title = normalize(song.title || "");
-      let artist = normalize(song.artist || song.author || "");
-      return title.includes(query) || artist.includes(query);
-    });
-
-    displayResults(list);
-
-  }catch(err){
-    console.error(err);
-    resultsDiv.innerHTML = `<div class="loading">Error loading results</div>`;
-  }
-}
-
-/* DISPLAY */
-function displayResults(list){
-  resultsDiv.innerHTML="";
-
-  if(!list.length){
-    resultsDiv.innerHTML = `<div class="loading">No results found</div>`;
-    return;
-  }
-
-  list.forEach(song=>{
-    let img = song.thumb || song.thumbnail || "https://via.placeholder.com/300x300?text=No+Image";
-    let title = song.title || "Unknown";
-    let artist = song.artist || song.author || "Unknown";
-
-    let card = document.createElement("div");
-    card.className="card";
-
-    card.innerHTML = `
-      <img src="${img}">
-      <div class="title">${title}</div>
-      <div class="artist">${artist}</div>
-    `;
-
-    resultsDiv.appendChild(card);
-  });
-}
-</script>
-
+    <script>
+        // API Configuration
+        const API_URL = "https://rapido.initd.asia/api/sp";
+        const API_KEY = "zk-b40a2070f09ea168d47573b68285c714073a4b61e1486c2fd1832f987e0dc4a6";
+        
+        // DOM Elements
+        const searchToggle = document.getElementById('searchToggle');
+        const searchContainer = document.getElementById('searchContainer');
+        const searchInput = document.getElementById('searchInput');
+        const searchButton = document.getElementById('searchButton');
+        const welcomeSection = document.getElementById('welcomeSection');
+        const recentSection = document.getElementById('recentSection');
+        const resultsSection = document.getElementById('resultsSection');
+        const resultsList = document.getElementById('resultsList');
+        const resultsCount = document.getElementById('resultsCount');
+        const loadingSpinner = document.getElementById('loadingSpinner');
+        const emptyState = document.getElementById('emptyState');
+        const lyricsModal = document.getElementById('lyricsModal');
+        const lyricsContent = document.getElementById('lyricsContent');
+        const lyricsSongTitle = document.getElementById('lyricsSongTitle');
+        const lyricsArtist = document.getElementById('lyricsArtist');
+        const closeLyrics = document.getElementById('closeLyrics');
+        const clearHistory = document.getElementById('clearHistory');
+        const recentList = document.getElementById('recentList');
+        
+        // Bottom navigation
+        const navHome = document.getElementById('navHome');
+        const navSearch = document.getElementById('navSearch');
+        
+        // Recent searches storage
+        let recentSearches = JSON.parse(localStorage.getItem('lyricspot_recent_searches')) || [
+            { query: "love", time: Date.now() },
+            { query: "shape of you", time: Date.now() - 172800000 } // 2 days ago
+        ];
+        
+        // Current search state
+        let currentSearchResults = [];
+        
+        // Initialize the app
+        function initApp() {
+            updateRecentSearchesUI();
+            setupEventListeners();
+            
+            // Check if there's a search query in URL
+            const urlParams = new URLSearchParams(window.location.search);
+            const query = urlParams.get('q');
+            if (query) {
+                searchInput.value = query;
+                performSearch(query);
+            }
+        }
+        
+        // Set up event listeners
+        function setupEventListeners() {
+            // Search toggle
+            searchToggle.addEventListener('click', () => {
+                searchContainer.classList.toggle('active');
+                if (searchContainer.classList.contains('active')) {
+                    searchInput.focus();
+                }
+            });
+            
+            // Search button
+            searchButton.addEventListener('click', () => {
+                const query = searchInput.value.trim();
+                if (query) {
+                    performSearch(query);
+                    searchContainer.classList.remove('active');
+                }
+            });
+            
+            // Search on Enter key
+            searchInput.addEventListener('keypress', (e) => {
+                if (e.key === 'Enter') {
+                    const query = searchInput.value.trim();
+                    if (query) {
+                        performSearch(query);
+                        searchContainer.classList.remove('active');
+                    }
+                }
+            });
+            
+            // Close lyrics modal
+            closeLyrics.addEventListener('click', () => {
+                lyricsModal.classList.remove('active');
+            });
+            
+            // Close lyrics modal when clicking outside
+            lyricsModal.addEventListener('click', (e) => {
+                if (e.target === lyricsModal) {
+                    lyricsModal.classList.remove('active');
+                }
+            });
+            
+            // Clear history
+            clearHistory.addEventListener('click', () => {
+                recentSearches = [];
+                localStorage.setItem('lyricspot_recent_searches', JSON.stringify(recentSearches));
+                updateRecentSearchesUI();
+            });
+            
+            // Bottom navigation
+            navSearch.addEventListener('click', () => {
+                searchContainer.classList.add('active');
+                searchInput.focus();
+                setActiveNav('navSearch');
+            });
+            
+            navHome.addEventListener('click', () => {
+                welcomeSection.style.display = 'block';
+                recentSection.style.display = 'block';
+                resultsSection.classList.remove('active');
+                emptyState.classList.remove('active');
+                searchContainer.classList.remove('active');
+                setActiveNav('navHome');
+            });
+            
+            // Recent search item click
+            recentList.addEventListener('click', (e) => {
+                const recentItem = e.target.closest('.recent-item');
+                if (recentItem) {
+                    const query = recentItem.getAttribute('data-search');
+                    searchInput.value = query;
+                    performSearch(query);
+                    searchContainer.classList.remove('active');
+                }
+            });
+        }
+        
+        // Set active navigation item
+        function setActiveNav(activeId) {
+            document.querySelectorAll('.nav-item').forEach(item => {
+                item.classList.remove('active');
+            });
+            document.getElementById(activeId).classList.add('active');
+        }
+        
+        // Update recent searches UI
+        function updateRecentSearchesUI() {
+            if (recentSearches.length === 0) {
+                recentList.innerHTML = '<div class="recent-item"><div class="recent-info"><h4>No recent searches</h4><p>Your search history will appear here</p></div></div>';
+                return;
+            }
+            
+            recentList.innerHTML = '';
+            recentSearches.slice(0, 5).forEach(search => {
+                const timeAgo = getTimeAgo(search.time);
+                const item = document.createElement('div');
+                item.className = 'recent-item';
+                item.setAttribute('data-search', search.query);
+                item.innerHTML = `
+                    <i class="fas fa-clock"></i>
+                    <div class="recent-info">
+                        <h4>${capitalizeFirstLetter(search.query)}</h4>
+                        <p>Searched ${timeAgo}</p>
+                    </div>
+                `;
+                recentList.appendChild(item);
+            });
+        }
+        
+        // Get time ago string
+        function getTimeAgo(timestamp) {
+            const now = Date.now();
+            const diff = now - timestamp;
+            
+            if (diff < 60000) return 'just now';
+            if (diff < 3600000) return `${Math.floor(diff / 60000)} minutes ago`;
+            if (diff < 86400000) return `${Math.floor(diff / 3600000)} hours ago`;
+            return `${Math.floor(diff / 86400000)} days ago`;
+        }
+        
+        // Capitalize first letter
+        function capitalizeFirstLetter(string) {
+            return string.charAt(0).toUpperCase() + string.slice(1);
+        }
+        
+        // Perform search
+        async function performSearch(query) {
+            // Show loading, hide other sections
+            loadingSpinner.classList.add('active');
+            welcomeSection.style.display = 'none';
+            recentSection.style.display = 'none';
+            resultsSection.classList.remove('active');
+            emptyState.classList.remove('active');
+            
+            // Add to recent searches
+            addToRecentSearches(query);
+            
+            try {
+                // Call the API
+                const response = await fetch(`${API_URL}?query=${encodeURIComponent(query)}&apikey=${API_KEY}`);
+                
+                if (!response.ok) {
+                    throw new Error(`API error: ${response.status}`);
+                }
+                
+                const data = await response.json();
+                
+                // Process results
+                displaySearchResults(data, query);
+                
+            } catch (error) {
+                console.error('Search error:', error);
+                showErrorState();
+            } finally {
+                loadingSpinner.classList.remove('active');
+            }
+        }
+        
+        // Add search to recent searches
+        function addToRecentSearches(query) {
+            // Remove if already exists
+            recentSearches = recentSearches.filter(item => item.query.toLowerCase() !== query.toLowerCase());
+            
+            // Add to beginning
+            recentSearches.unshift({
+                query: query,
+                time: Date.now()
+            });
+            
+            // Keep only last 10 searches
+            if (recentSearches.length > 10) {
+                recentSearches.pop();
+            }
+            
+            // Save to localStorage
+            localStorage.setItem('lyricspot_recent_searches', JSON.stringify(recentSearches));
+            
+            // Update UI
+            updateRecentSearchesUI();
+        }
+        
+        // Display search results
+        function displaySearchResults(data, query) {
+            // Clear previous results
+            resultsList.innerHTML = '';
+            
+            // Check if we have results
+            if (!data || !data.result || data.result.length === 0) {
+                emptyState.classList.add('active');
+                resultsCount.textContent = '0 results';
+                return;
+            }
+            
+            // Show results section
+            resultsSection.classList.add('active');
+            
+            // Update results count
+            resultsCount.textContent = `${data.result.length} result${data.result.length !== 1 ? 's' : ''}`;
+            
+            // Store current results
+            currentSearchResults = data.result;
+            
+            // Create result items
+            data.result.forEach((song, index) => {
+                const songCard = document.createElement('div');
+                songCard.className = 'song-card';
+                songCard.innerHTML = `
+                    <div class="song-album">
+                        <i class="fas fa-music"></i>
+                    </div>
+                    <div class="song-info">
+                        <h3 class="song-title">${song.title || 'Unknown Title'}</h3>
+                        <p class="song-artist">${song.artist || 'Unknown Artist'}</p>
+                        <p class="song-album-name">${song.album || ''}</p>
+                    </div>
+                    <button class="lyrics-btn" data-index="${index}">
+                        <i class="fas fa-scroll"></i>
+                    </button>
+                `;
+                
+                resultsList.appendChild(songCard);
+            });
+            
+            // Add event listeners to lyrics buttons
+            document.querySelectorAll('.lyrics-btn').forEach(btn => {
+                btn.addEventListener('click', (e) => {
+                    const index = parseInt(e.currentTarget.getAttribute('data-index'));
+                    showLyrics(index);
+                });
+            });
+        }
+        
+        // Show error state
+        function showErrorState() {
+            emptyState.innerHTML = `
+                <i class="fas fa-exclamation-circle"></i>
+                <h3>Search failed</h3>
+                <p>Please check your connection and try again</p>
+            `;
+            emptyState.classList.add('active');
+        }
+        
+        // Show lyrics for a song
+        async function showLyrics(index) {
+            const song = currentSearchResults[index];
+            
+            // Update modal header
+            lyricsSongTitle.textContent = song.title || 'Unknown Title';
+            lyricsArtist.textContent = song.artist || 'Unknown Artist';
+            
+            // Show loading in lyrics content
+            lyricsContent.textContent = 'Loading lyrics...';
+            lyricsModal.classList.add('active');
+            
+            try {
+                // Fetch lyrics from API
+                const response = await fetch(`${API_URL}?query=${encodeURIComponent(song.title + ' ' + song.artist)}&apikey=${API_KEY}`);
+                
+                if (!response.ok) {
+                    throw new Error(`API error: ${response.status}`);
+                }
+                
+                const data = await response.json();
+                
+                // Display lyrics
+                if (data.result && data.result.length > 0) {
+                    // Try to find the exact song match
+                    const exactMatch = data.result.find(item => 
+                        item.title && song.title && 
+                        item.title.toLowerCase().includes(song.title.toLowerCase())
+                    );
+                    
+                    if (exactMatch && exactMatch.lyrics) {
+                        lyricsContent.textContent = exactMatch.lyrics;
+                    } else if (data.result[0].lyrics) {
+                        lyricsContent.textContent = data.result[0].lyrics;
+                    } else {
+                        lyricsContent.textContent = 'Lyrics not available for this song.';
+                    }
+                } else {
+                    lyricsContent.textContent = 'Lyrics not found for this song.';
+                }
+                
+            } catch (error) {
+                console.error('Lyrics fetch error:', error);
+                lyricsContent.textContent = 'Failed to load lyrics. Please try again.';
+            }
+        }
+        
+        // Initialize the app when DOM is loaded
+        document.addEventListener('DOMContentLoaded', initApp);
+        
+        // Prevent zoom on double-tap
+        document.addEventListener('touchstart', (event) => {
+            if (event.touches.length > 1) {
+                event.preventDefault();
+            }
+        }, { passive: false });
+        
+        let lastTouchEnd = 0;
+        document.addEventListener('touchend', (event) => {
+            const now = Date.now();
+            if (now - lastTouchEnd <= 300) {
+                event.preventDefault();
+            }
+            lastTouchEnd = now;
+        }, false);
+    </script>
 </body>
 </html>
